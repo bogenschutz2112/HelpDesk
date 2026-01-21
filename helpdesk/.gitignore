@@ -1,0 +1,3 @@
+.env
+storage/tickets.json
+__pycache__/
