@@ -2,6 +2,7 @@ import os
 import json
 import glob
 import re
+import uuid
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 
@@ -153,7 +154,7 @@ def load_tickets() -> List[Dict[str, Any]]:
 
 def save_ticket_locally(ticket: Dict[str, Any]) -> Dict[str, Any]:
     tickets = load_tickets()
-    ticket["id"] = len(tickets) + 1
+    ticket["id"] = str(uuid.uuid4())
     tickets.append(ticket)
     with open(TICKETS_JSON, "w", encoding="utf-8") as fh:
         json.dump(tickets, fh, indent=2)
@@ -183,7 +184,6 @@ def chat(req: ChatRequest):
 @app.post("/ticket")
 def ticket(req: TicketRequest):
     ensure_dirs()
-    body = f"{req.details}\n\nUser: {req.user.model_dump()}"
     labels = ["helpdesk", "triage"]
     t = save_ticket_locally({
         "summary": req.summary,
